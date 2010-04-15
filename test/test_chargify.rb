@@ -37,6 +37,13 @@ class TestChargify < Test::Unit::TestCase
       customer.reference.should == 'bradleyjoyce'
       customer.organization.should == 'Squeejee'
     end
+
+    should "return info for a customer by reference" do
+      stub_get "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=bradleyjoyce", "customer.json"
+      customer = @client.customer_by_reference('bradleyjoyce')
+      customer.id.should == 16
+      customer.organization.should == 'Squeejee'
+    end
     
     should "create a new customer" do
       stub_post "https://OU812:x@pengwynn.chargify.com/customers.json", "new_customer.json"
