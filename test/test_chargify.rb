@@ -40,7 +40,7 @@ class TestChargify < Test::Unit::TestCase
 
     should "return info for a customer by reference" do
       stub_get "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=bradleyjoyce", "customer.json"
-      customer = @client.customer_by_reference('bradleyjoyce')
+      customer = @client.customer({:reference => 'bradleyjoyce'})
       customer.id.should == 16
       customer.organization.should == 'Squeejee'
     end
@@ -213,7 +213,7 @@ class TestChargify < Test::Unit::TestCase
     
     should "return info for a product by its handle" do
       stub_get "https://OU812:x@pengwynn.chargify.com/products/handle/tweetsaver.json", "product.json"
-      product = @client.product_by_handle('tweetsaver')
+      product = @client.product({:handle => 'tweetsaver'})
       product.accounting_code.should == 'TSMO'
     end
     

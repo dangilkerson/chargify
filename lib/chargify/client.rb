@@ -35,15 +35,18 @@ module Chargify
       customers = self.class.get("/customers.json", :query => options)
       customers.map{|c| Hashie::Mash.new c['customer']}
     end
-    
-    def customer(chargify_id)
-      Hashie::Mash.new(self.class.get("/customers/#{chargify_id}.json")).customer
+
+    # Returns a customer by id or options.
+    # options: reference    
+    def customer(customer_id_or_options)
+      case customer_id_or_options
+      when Hash
+        Hashie::Mash.new(self.class.get("/customers/lookup.json", :query => customer_id_or_options)).customer
+      else
+        Hashie::Mash.new(self.class.get("/customers/#{customer_id_or_options}.json")).customer
+      end
     end
 
-    def customer_by_reference(reference_id)
-      Hashie::Mash.new(self.class.get("/customers/lookup.json", :query => {:reference => reference_id})).customer
-    end
-    
     #
     # * first_name (Required)
     # * last_name (Required)
@@ -115,13 +118,15 @@ module Chargify
       products.map{|p| Hashie::Mash.new p['product']}
     end
     
-    def product(product_id)
-      Hashie::Mash.new( self.class.get("/products/#{product_id}.json")).product
-    end
-    
-    def product_by_handle(handle)
-      Hashie::Mash.new(self.class.get("/products/handle/#{handle}.json")).product
-    end
-    
+    # Returns a product by id or options.
+    # options: handle
+    def product(product_id_or_options)
+      case product_id_or_options
+      when Hash
+        Hashie::Mash.new(self.class.get("/products/handle/#{product_id_or_options[:handle]}.json")).product
+      else 
+        Hashie::Mash.new(self.class.get("/products/#{product_id_or_options}.json")).product
+      end
+    end    
   end
 end
